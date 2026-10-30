@@ -12,32 +12,23 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body { height: 100%; }
-
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(94, 200, 255, 0.08), transparent),
+    var(--bg);
   color: var(--text);
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
-#stage {
-  position: fixed;
-  inset: 0;
-  display: block;
-}
-
+/* ---------- vertical flow: header / controls / stage / info / footer ---------- */
 .ui {
-  position: fixed;
-  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events: none;
-  padding: 22px 18px;
+  gap: 22px;
+  padding: 28px 18px 30px;
 }
-
-.ui > * { pointer-events: auto; }
 
 /* ---------- header ---------- */
 header { text-align: center; user-select: none; }
@@ -66,7 +57,6 @@ header h1 {
 
 /* ---------- control card ---------- */
 .control-card {
-  margin-top: 18px;
   width: min(720px, 94vw);
   background: var(--card);
   border: 1px solid var(--border);
@@ -215,14 +205,32 @@ header h1 {
   box-shadow: 0 0 18px rgba(255, 210, 94, 0.3);
 }
 
+/* ---------- stage: the curve lives here, nothing overlaps it ---------- */
+.stage-wrap {
+  position: relative;
+  width: 100%;
+  height: max(520px, 72vh);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 55%, rgba(24, 30, 60, 0.55), transparent),
+    rgba(7, 9, 18, 0.6);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.35);
+}
+
+#stage {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
 /* ---------- info card ---------- */
 .info-card {
-  margin-top: 16px;
-  width: min(560px, 92vw);
+  width: min(680px, 92vw);
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   text-align: center;
@@ -253,8 +261,6 @@ header h1 {
 
 /* ---------- footer ---------- */
 footer {
-  margin-top: auto;
-  padding-top: 12px;
   text-align: center;
   color: #6b7398;
   font-size: 12px;
@@ -269,21 +275,8 @@ footer code {
   font-family: Consolas, Menlo, monospace;
 }
 
-/* ---------- wide screens: dock the info card to the lower-left ---------- */
-@media (min-width: 900px) {
-  .info-card {
-    position: fixed;
-    left: 22px;
-    bottom: 22px;
-    margin: 0;
-    width: 400px;
-    text-align: left;
-  }
-  footer { display: none; }
-}
-
 /* ---------- small screens ---------- */
 @media (max-width: 620px) {
   .tagline { letter-spacing: 1px; }
-  footer { display: none; }
+  .stage-wrap { height: 60vh; }
 }

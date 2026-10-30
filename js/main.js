@@ -46,25 +46,32 @@
   };
 
   /* ---------------- canvas sizing ---------------- */
+  var stageWrap = document.querySelector(".stage-wrap");
+
   function resize() {
+    var W = stageWrap.clientWidth;
+    var H = stageWrap.clientHeight;
+    if (!W || !H) return;
     var dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + "px";
-    canvas.style.height = window.innerHeight + "px";
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     state.fourierDirty = true;
     makeStars();
   }
   window.addEventListener("resize", resize);
+  if (window.ResizeObserver) { new ResizeObserver(resize).observe(stageWrap); }
 
   function makeStars() {
+    var W = canvas.clientWidth || 1, H = canvas.clientHeight || 1;
     state.stars = [];
-    var n = Math.floor((window.innerWidth * window.innerHeight) / 16000);
+    var n = Math.floor((W * H) / 16000);
     for (var i = 0; i < n; i++) {
       state.stars.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: Math.random() * W,
+        y: Math.random() * H,
         r: Math.random() * 1.3 + 0.2,
         tw: Math.random() * Math.PI * 2
       });
@@ -101,13 +108,14 @@
     var spanX = Math.max(maxX - minX, 1e-9);
     var spanY = Math.max(maxY - minY, 1e-9);
 
-    // leave room for the control card at the top; the curve lives below it
-    var W = window.innerWidth, H = window.innerHeight;
-    var availW = W * 0.62;
-    var availH = H * 0.44;
+    // the stage has its own dedicated band of the page — the curve is
+    // centered in it with generous padding, so it never touches any card
+    var W = canvas.clientWidth, H = canvas.clientHeight;
+    var availW = W * 0.84;
+    var availH = H * 0.84;
     var scale = Math.min(availW / spanX, availH / spanY);
     var cx = W / 2;
-    var cy = H * 0.64;
+    var cy = H / 2;
 
     var midX = (minX + maxX) / 2;
     var midY = (minY + maxY) / 2;
@@ -241,10 +249,10 @@
   /* ---------------- renderers ---------------- */
 
   function drawBackground(now) {
-    var W = window.innerWidth, H = window.innerHeight;
-    var g = ctx.createRadialGradient(W / 2, H * 0.62, 60, W / 2, H * 0.62, Math.max(W, H) * 0.75);
-    g.addColorStop(0, "#10142a");
-    g.addColorStop(1, "#070912");
+    var W = canvas.clientWidth, H = canvas.clientHeight;
+    var g = ctx.createRadialGradient(W / 2, H * 0.55, 60, W / 2, H * 0.55, Math.max(W, H) * 0.75);
+    g.addColorStop(0, "#141936");
+    g.addColorStop(1, "#0a0d1c");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
